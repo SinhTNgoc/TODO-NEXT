@@ -127,3 +127,24 @@
     filter: invert(1);
   }
 }
+
+.task {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+}
+
+.checked {
+  text-decoration: line-through;
+  color: red;
+  cursor: pointer;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.p {
+  font-size: 24px;
+}

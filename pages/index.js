@@ -51,7 +51,8 @@ export default function Home() {
       // }
       return todo;
     });
-    console.log(updateTodos);
+    localStorage.setItem("ToDoItems", JSON.stringify(updateTodos));
+
     setToDoList(updateTodos);
   };
 
@@ -73,12 +74,25 @@ export default function Home() {
             onChange={(e) => setTask(e.target.value)}
           />
           <button onClick={(e) => addToDo(task.id)}>Add</button>
-
           {todoList.map((task, index) => (
-            <div key={task.id} className="task">
-              <input type="checkbox" defaultChecked={task.completed} />
-              <p onClick={() => handleCompleteTask(task.id)}>{task.name}</p>
-              <button onClick={(e) => handleDelete(task.id)}>&#10006;</button>
+            <div
+              key={task.id}
+              className={`${
+                task.completed ? styles["checked"] : styles["task"]
+              }`}
+            >
+              <p
+                className={styles.p}
+                onClick={() => handleCompleteTask(task.id)}
+              >
+                {task.name}
+              </p>
+              <button
+                className={styles.pointer}
+                onClick={(e) => handleDelete(task.id)}
+              >
+                &#10006;
+              </button>
             </div>
           ))}
           {todoList.length === 0 && <h2>No tasks</h2>}
