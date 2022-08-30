@@ -1,8 +1,60 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
+import Head from "next/head";
+import Image from "next/image";
+import { useState, useEffect, useRef } from "react";
+import styles from "../styles/Home.module.css";
+import { v4 as uuidv4 } from "uuid";
 
 export default function Home() {
+  const [task, setTask] = useState("");
+  const [todoList, setToDoList] = useState([]);
+  // const [checked, setChecked] = useState(false);
+
+  useEffect(() => {
+    setToDoList(JSON.parse(localStorage.getItem("ToDoItems")) || []);
+  }, []);
+
+  const addToDo = () => {
+    if (task) {
+      setToDoList((prev) => {
+        const newList = [
+          {
+            id: uuidv4(),
+            name: task,
+            completed: false,
+          },
+          ...prev,
+        ];
+        localStorage.setItem("ToDoItems", JSON.stringify(newList));
+        return newList;
+      });
+
+      setTask("");
+    }
+  };
+
+  const handleDelete = (id) => {
+    // console.log(id);
+    setToDoList((prev) => {
+      let newJobs = prev.filter((job) => job.id !== id);
+      localStorage.setItem("ToDoItems", JSON.stringify(newJobs));
+      return newJobs;
+    });
+  };
+
+  const handleCompleteTask = (id) => {
+    let updateTodos = todoList.map((todo) => {
+      if (todo.id === id) {
+        todo.completed = !todo.completed;
+      }
+      // if (todo.completed) {
+      //   setChecked(true);
+      // }
+      return todo;
+    });
+    console.log(updateTodos);
+    setToDoList(updateTodos);
+  };
+
   return (
     <div className={styles.container}>
       <Head>
@@ -11,59 +63,29 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
+      <main>
+        <h1>ToDo List</h1>
+        <div>
+          <input
+            type="text"
+            placeholder="Task...."
+            value={task}
+            onChange={(e) => setTask(e.target.value)}
+          />
+          <button onClick={(e) => addToDo(task.id)}>Add</button>
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+          {todoList.map((task, index) => (
+            <div key={task.id} className="task">
+              <input type="checkbox" defaultChecked={task.completed} />
+              <p onClick={() => handleCompleteTask(task.id)}>{task.name}</p>
+              <button onClick={(e) => handleDelete(task.id)}>&#10006;</button>
+            </div>
+          ))}
+          {todoList.length === 0 && <h2>No tasks</h2>}
         </div>
       </main>
 
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
+      <footer></footer>
     </div>
-  )
+  );
 }

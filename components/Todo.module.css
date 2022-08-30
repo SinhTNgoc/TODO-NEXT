@@ -1,0 +1,22 @@
+.test1 {
+  margin-top: 8px;
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+.test2 {
+  display: flex;
+  align-items: flex-start;
+  gap: 2px;
+  cursor: pointer;
+}
+.completeToDo {
+  text-decoration: line-through;
+  cursor: pointer;
+}
+
+.cursor {
+  cursor: pointer;
+}
